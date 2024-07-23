@@ -39,7 +39,17 @@ if $cmdline[0] = 1 Then
 	If @error then Exit
 Else
 	$file = FileReadToArray(FileOpenDialog("choose a textfile",@ScriptDir,"Text (*.txt)"))
-	If @error then Exit
+	If @error then
+		$file = ClipGet()
+		if stringleft($file,1) <> ":" then Exit
+		$file = StringSplit($file,@CRLF,3)
+		_ArrayDisplay($file)
+		Switch MsgBox(1,"File Selection Failed","Clipboard has correct format" & @CRLF & "wanna use that instead")
+			Case 2
+				Exit
+		EndSwitch
+
+	EndIf
 EndIf
 
 $filedir = @ScriptDir & "\"
@@ -128,7 +138,7 @@ Func constructsheet($HNDL_ODS,$tournament_name,$players,$playernames)
 	_OOoCalc_ColumnSetProperties($HNDL_ODS,13,1000,True,True)
 
 	GenerateRoundRobinSchedule($players)
-	ShuffleArray($playernames)
+	_ArrayShuffle($playernames)
 
 	For $i = 0 to $players[0]-1
 		_OOoCalc_WriteCell($HNDL_ODS,$playernames[$i],"A" & 4 + $i)
@@ -240,16 +250,6 @@ func _exit()
 	_OOoCalc_BookSaveAs($HNDL_ODS,$ods)
 	_OOoCalc_BookClose($HNDL_ODS)
 endfunc
-Func ShuffleArray(ByRef $array)
-    Local $size = UBound($array) - 1
-    For $i = $size To 1 Step -1
-        Local $j = Random(0, $i, 1) ; Get a random index between 0 and $i
-        ; Swap elements $array[$i] and $array[$j]
-        Local $temp = $array[$i]
-        $array[$i] = $array[$j]
-        $array[$j] = $temp
-    Next
-EndFunc
 
 Func AlphabeticalNumberToLetter($number)
 	If $number < 0 then
