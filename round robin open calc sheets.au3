@@ -34,6 +34,7 @@
 dim $playernames[0]
 
 
+
 if $cmdline[0] = 1 Then
 	$file = FileReadToArray($cmdline[1])
 	If @error then Exit
@@ -41,16 +42,16 @@ Else
 	$file = FileReadToArray(FileOpenDialog("choose a textfile",@ScriptDir,"Text (*.txt)"))
 	If @error then
 		$file = ClipGet()
-		if stringleft($file,1) <> ":" then Exit
+		if stringleft($file,1) <> ":" then
+			$file = ":" & InputBox("Choose Tournament Name","If you dont hit cancel names will get copied out of your clipboard","Standard") & @CRLF & $file
+			if @error then Exit
+
+		EndIf
 		$file = StringSplit($file,@CRLF,3)
 		_ArrayDisplay($file)
-		Switch MsgBox(1,"File Selection Failed","Clipboard has correct format" & @CRLF & "wanna use that instead")
-			Case 2
-				Exit
-		EndSwitch
-
 	EndIf
 EndIf
+
 
 $filedir = @ScriptDir & "\"
 $ods = $filedir & @hour & @min & @sec & "tournament.ods"
