@@ -80,10 +80,6 @@ This AutoIt script generates OpenOffice Calc sheets for 2-game round-robin tourn
 - Ensures the input file is correctly formatted before processing.
 - Displays an error message if the input file is not set up correctly.
 
-## License
-
-This project is licensed under the MIT License.
-
 ## Author
 
 - Mauer01
